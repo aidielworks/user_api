@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -40,7 +42,18 @@ Route::middleware('auth:api')->group(function () {
 
     //Show All User
     Route::get('/user', function () {
-        return User::all();
+
+        if (request()->has('name')) {
+
+            $users = User::where('name', request('name'))
+                ->paginate(3)
+                ->appends('name', request('name'));
+        } else {
+
+            $users = User::paginate(3);
+        }
+
+        return UserResource::collection($users);
     });
 
     //Create user
@@ -56,6 +69,12 @@ Route::middleware('auth:api')->group(function () {
             'email' => request('email'),
             'password' => Hash::make(request('password'))
         ]);
+    });
+
+    //Show specific user
+    Route::get('/user/{user}', function (User $user) {
+
+        return new UserResource($user);
     });
 
     //Update User
