@@ -45,15 +45,15 @@ Route::middleware('auth:api')->group(function () {
 
         if (request()->has('name')) {
 
-            $users = User::where('name', request('name'))
-                ->paginate(3)
-                ->appends('name', request('name'));
+            $name = request('name');
+            $users = User::where('name', 'like', "%{$name}%")
+                ->paginate(3);
         } else {
 
             $users = User::paginate(3);
         }
 
-        return UserResource::collection($users);
+        return new UserCollection($users);
     });
 
     //Create user
