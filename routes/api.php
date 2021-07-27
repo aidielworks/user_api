@@ -28,10 +28,9 @@ use Maatwebsite\Excel\Facades\Excel;
 
 
 
-//ignore this comment it just a test
+
 
 //Login to get token 
-
 Route::post('/login', function () {
     $login = request()->validate([
         'email' => 'required|string',
